@@ -6,7 +6,7 @@
 </div>      
 <div class="toolbardivs">
 <?php global $base_url ;?>
-<a href="<?php echo $base_url ;?>/users">DIRECTORY</a>
+<a href="https://info.deepcarbon.net/vivo/people">DIRECTORY</a>
 </div>
 
 <?php
