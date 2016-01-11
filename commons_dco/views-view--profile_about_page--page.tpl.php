@@ -40,8 +40,8 @@ PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
 SELECT ?person ?dco_id ?label
   (GROUP_CONCAT(DISTINCT ?comm ; SEPARATOR=\"|\") AS ?community)
   (GROUP_CONCAT(DISTINCT ?comm_label ; SEPARATOR=\"|\") AS ?community_label)
-  (GROUP_CONCAT(DISTINCT ?gp ; SEPARATOR=\"|\") AS ?group)
-  (GROUP_CONCAT(DISTINCT ?gp_label ; SEPARATOR=\"|\") AS ?group_label)
+  (GROUP_CONCAT(DISTINCT ?tm ; SEPARATOR=\"|\") AS ?team)
+  (GROUP_CONCAT(DISTINCT ?tm_label ; SEPARATOR=\"|\") AS ?team_label)
   (GROUP_CONCAT(DISTINCT ?org ; SEPARATOR = \"|\") AS ?organization)
   (GROUP_CONCAT(DISTINCT ?org_label ; SEPARATOR = \"|\") AS ?organization_label)
   (GROUP_CONCAT(DISTINCT ?networkId ; SEPARATOR = \"|\") AS ?uid)
@@ -57,7 +57,14 @@ where
   OPTIONAL { ?person dco:hasDcoId ?id . }
   OPTIONAL { ?person dco:inOrganization ?org . ?org rdfs:label ?ol . }
   OPTIONAL { ?person dco:associatedDCOCommunity ?comm . ?comm rdfs:label ?c_l . }
-  OPTIONAL { ?person dco:associatedDCOPortalGroup ?gp . ?gp rdfs:label ?g_l . }
+  OPTIONAL { ?person obo:RO_0000053 ?teamrole .
+             ?teamrole a vivo:MemberRole .
+             OPTIONAL { ?teamrole vivo:dateTimeInterval ?interval .
+                                  ?interval vivo:end ?end .}
+             FILTER( ! BOUND(?end))
+             ?teamrole vivo:roleContributesTo ?tm .
+             ?tm a dco:Team .
+             ?tm rdfs:label ?t_l }
   OPTIONAL { ?person vivo:hasResearchArea ?ra . ?ra rdfs:label ?r_l . }
   OPTIONAL { ?person dco:homeCountry ?co . ?co rdfs:label ?co_l . }
   OPTIONAL { ?person obo:ARG_2000028 ?contact . ?contact vcard:hasEmail ?eobj . ?eobj vcard:email ?e_l . }
@@ -65,7 +72,7 @@ where
   BIND(str(?id) AS ?dco_id) .
   BIND(str(?ol) AS ?org_label) .
   BIND(str(?c_l) AS ?comm_label) .
-  BIND(str(?g_l) AS ?gp_label) .
+  BIND(str(?t_l) AS ?tm_label) .
   BIND(str(?r_l) AS ?ra_label) .
   BIND(str(?co_l) AS ?co_label) .
   BIND(str(?e_l) AS ?e_label)
@@ -158,16 +165,16 @@ print( "</div>" ) ;
 print( "" ) ;
 
 // Display the DCO Portal Groups this user is a member of, separated by a comma
-$groupuris = explode( "|", $bindings[0]->group->value ) ;
-$grouplabels = explode( "|", $bindings[0]->group_label->value ) ;
+$teamuris = explode( "|", $bindings[0]->team->value ) ;
+$teamlabels = explode( "|", $bindings[0]->team_label->value ) ;
 print( "<div class=\"views-field-tid\">" ) ;
 print( "<label class=\"views-label-tid\">" ) ;
-print( "Portal Groups:" ) ;
+print( "Teams:" ) ;
 print( "</label>" ) ;
-for( $i = 0; $i < count( $groupuris ); $i++ )
+for( $i = 0; $i < count( $teamuris ); $i++ )
 {
     if( $i != 0 ) print( ", " ) ;
-    print( "<a href=\"" . $groupuris[$i] . "\">" . $grouplabels[$i] . "</a>" ) ;
+    print( "<a href=\"" . $teamuris[$i] . "\">" . $teamlabels[$i] . "</a>" ) ;
 }
 print( "</div>" ) ;
 print( "" ) ;
