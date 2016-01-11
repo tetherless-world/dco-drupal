@@ -1,0 +1,537 @@
+<?php
+
+/**
+ * @file
+ * Provides place to add hooks, functions, etc... for DCO
+ */
+
+/**
+ * Implementation of hook_form_alter() for the user registration form
+ */
+function dco_form_user_register_alter(&$form, &$form_state)
+{
+	$dco_debug = false ;
+
+	if( $dco_debug )
+	{
+		/* This code right here displays the form information
+		 */
+		$handle = fopen( "/tmp/dco.debug.log", "w" ) ;
+		foreach( $form as $name => $params )
+		{
+			foreach( $params as $key => $values )
+			{
+				foreach( $values as $v1 => $v2 )
+				{
+					fwrite( $handle, "$name - $key - $v1 - $v2\n" ) ;
+				}
+			}
+		}
+		fclose( $handle ) ;
+	}
+
+	/* in the user registration form, remove the description of the mailman
+	 * field, we only need the generic description for each list. And remove the
+	 * user_terms field. We don't want users to have to fill that out
+	 */
+	$form['user_mailman_register']['lists']['#description'] = "" ;
+	unset( $form['user_terms']['user_terms_10'] ) ;
+}
+
+/**
+ * Implementation of hook_form_alter() for the user registration form
+ */
+function dco_form_user_profile_form_alter(&$form, &$form_state)
+{
+	$dco_debug = false ;
+
+	if( $dco_debug )
+	{
+		/* This code right here displays the form information
+		 */
+		$handle = fopen( "/tmp/dco.debug.log", "w" ) ;
+		foreach( $form as $name => $params )
+		{
+			foreach( $params as $key => $values )
+			{
+				foreach( $values as $v1 => $v2 )
+				{
+					fwrite( $handle, "$name - $key - $v1 - $v2\n" ) ;
+				}
+			}
+		}
+		fclose( $handle ) ;
+	}
+
+	/* in the user registration form, remove the description of the mailman
+	 * field, we only need the generic description for each list. And remove the
+	 * user_terms field. We don't want users to have to fill that out
+	 */
+	unset( $form['account']['pass'] ) ;
+}
+
+/**
+ * Implementation of hook_nodeapi().
+ *
+ * What we do here is that whenever a new organic group gets created we set
+ * up a new role, two new vocabulary terms, set some permissions.
+ */
+function dco_nodeapi( &$node, $op, $a3 = NULL, $a4 = NULL )
+{
+	$dco_debug = true ;
+
+	global $user;
+
+	$type = $node->type ;
+	// we only want to do all of this if a new group is being created. So
+	// the operation is insert, and the type of node is group. We'll use the
+	// group name to create the role and terms.
+	if( $op == "insert" && $type == "group" )
+	{
+		$name = $user->name ;
+		$title = $node->title ;
+		$body = $node->content['body']['#value'] ;
+
+		if( $dco_debug )
+		{
+			$handle = fopen( "/tmp/dco.debug.log", "a" ) ;
+			fwrite( $handle, "$name $op node $title of type $type\n" ) ;
+		}
+
+		// Vocabulary name where the group terms are
+		$vocab_name = "Access Level" ;
+
+		// name of the taxonomy term for group. This is read by everyone,
+		// write by group only
+		$new_tname = $title ;
+		if( $dco_debug )
+		{
+			fwrite( $handle, "    term name $new_tname\n" ) ;
+		}
+
+		// name of the taxonomy term for the group private content. This is
+		// read/write by group only
+		$new_tpname = $title . " Private" ;
+		if( $dco_debug )
+		{
+			fwrite( $handle, "    term private name $new_tpname\n" ) ;
+		}
+
+		// name of the new role
+		$new_rname = $title . " Group Member" ;
+		if( $dco_debug )
+		{
+			fwrite( $handle, "    role name $new_rname\n" ) ;
+		}
+
+		// Find the groups vocabulary. We could hard code the vocabulary id,
+		// but that's not good enough.
+		$vid = 0 ;
+		$vocabularies = taxonomy_get_vocabularies() ;
+		foreach( $vocabularies as $vocab )
+		{
+			$vname = $vocab->name ;
+			if( $dco_debug )
+			{
+				fwrite( $handle, "  $vname\n" ) ;
+			}
+			if( $vname == $vocab_name )
+			{
+				$vid = $vocab->vid ;
+				break ;
+			}
+		}
+		if( $vid == 0 )
+		{
+			if( $dco_debug )
+			{
+				fwrite( $handle, "Couldn't find the vocabulary $vocab_name\n" ) ;
+				fflush( $handle ) ;
+				fclose( $handle ) ;
+			}
+			return ;
+		}
+
+		// see if the terms for the group already exist.
+		$terms = taxonomy_get_tree( $vid ) ;
+		foreach( $terms as $term )
+		{
+			$tname = $term->name ;
+			if( $tname == $new_tname || $tname == $new_tpname )
+			{
+				if( $dco_debug )
+				{
+					fwrite( $handle, "$new_tname or $new_tpname term ALREADY EXISTS\n" ) ;
+					fflush( $handle ) ;
+					fclose( $handle ) ;
+				}
+				return ;
+			}
+		}
+
+		// see if the role already exists.
+		$roles = user_roles() ;
+		if( $dco_debug )
+		{
+			fwrite( $handle, "roles\n" ) ;
+		}
+		foreach( $roles as $rid => $rname )
+		{
+			if( $rname == $new_rname )
+			{
+				if( $dco_debug )
+				{
+					fwrite( $handle, "$new_rname role ALREADY EXISTS\n" ) ;
+					fflush( $handle ) ;
+					fclose( $handle ) ;
+				}
+				return ;
+			}
+		}
+
+		// We're clear.
+
+		// Create the new vocabulary term
+		if( $dco_debug )
+		{
+			fwrite( $handle, "Creating new term $new_tname\n" ) ;
+		}
+		$new_term = array( 'vid' => $vid, // Voacabulary ID
+					       'name' => $new_tname, // Term Name
+		);
+		taxonomy_save_term( $new_term ) ;
+		$new_tid = $new_term['tid'] ;
+		if( $dco_debug )
+		{
+			fwrite( $handle, "New tid = $new_tid\n" ) ;
+		}
+
+		// Create the new vocabulary term
+		if( $dco_debug )
+		{
+			fwrite( $handle, "Creating new term $new_tpname\n" ) ;
+		}
+		$new_term = array( 'vid' => $vid, // Voacabulary ID
+					       'name' => $new_tpname, // Term Name
+		);
+		taxonomy_save_term( $new_term ) ;
+		$new_tpid = $new_term['tid'] ;
+		if( $dco_debug )
+		{
+			fwrite( $handle, "New tpid = $new_tpid\n" ) ;
+		}
+
+		// Create the new role
+		// The following code is based on the information found on the
+		// following page: https://drupal.org/node/283261
+		require_once(drupal_get_path('module', 'user') . "/user.admin.inc");
+
+		$form_id = "user_admin_new_role";
+		$form_values = array();
+		$form_values["name"] = $new_rname;
+		$form_values["op"] = t('Add role');
+		$form_state = array();
+		$form_state["values"] = $form_values;
+
+		// apparently we have to clear the query string for this to work
+		$q = $_GET['q'];
+		$_GET['q'] = "";
+
+		drupal_execute($form_id, $form_state);
+
+		// and now reset the query string
+		$_GET['q'] = $q;
+
+		// Find the new role id
+		$roles = user_roles(); // loads the roles table into an array
+		$new_rid = array_search($new_rname, $roles);
+		if( $dco_debug )
+		{
+			fwrite( $handle, "New rid = $new_rid\n" ) ;
+		}
+
+		// Assign the current user this role and save the changes
+		if( $dco_debug )
+		{
+			fwrite( $handle, "Updating the user's role\n" ) ;
+		}
+		$user->roles[$new_rid] = $new_rname ;
+		$edit = array('roles' => $user->roles);
+		user_save($user, $edit);
+
+		// Enable TAC for this role
+		// This is taken from the file taxonomy_access_admin.inc, the
+		// function is taxonomy_access_admin_form. This is supposed to
+		// create a form to allow us to update the TAC for a role. We don't
+		// want the form, just the set up and the update of the grant access
+
+		if( $dco_debug )
+		{
+			fwrite( $handle, "Enable TAC for the new role\n" ) ;
+		}
+		$row = new stdClass() ;
+		$row->vid = 0 ;
+		$row->rid = $new_rid ;
+		drupal_write_record( 'term_access_defaults', $row ) ;
+
+		// Now, in the term_access table we need to add a row for each of
+		// the new terms. First, the group term
+		if( $dco_debug )
+		{
+			fwrite( $handle, "Grant access to new role to group term\n" ) ;
+		}
+		$row = new stdClass() ;
+		$row->tid = $new_tid ;
+		$row->rid = $new_rid ;
+		$row->grant_view = 1 ;
+		$row->grant_update = 1 ;
+		$row->grant_delete = 1 ;
+		$row->grant_create = 1 ;
+		$row->grant_list = 1 ;
+		drupal_write_record( 'term_access', $row ) ;
+
+		// Now the group private term
+		if( $dco_debug )
+		{
+			fwrite( $handle, "Grant access to new role to group private term\n" ) ;
+		}
+		$row = new stdClass() ;
+		$row->tid = $new_tpid ;
+		$row->rid = $new_rid ;
+		$row->grant_view = 1 ;
+		$row->grant_update = 1 ;
+		$row->grant_delete = 1 ;
+		$row->grant_create = 1 ;
+		$row->grant_list = 1 ;
+		drupal_write_record( 'term_access', $row ) ;
+
+		// Set up term private for anonymous D, D, D
+		if( $dco_debug )
+		{
+			fwrite( $handle, "Deny access to anonymous to group private term\n" ) ;
+		}
+		$row = new stdClass() ;
+		$row->tid = $new_tpid ;
+		$row->rid = 1 ; // anonymous user
+		$row->grant_view = 2 ;
+		$row->grant_update = 2 ;
+		$row->grant_delete = 2 ;
+		$row->grant_create = 0 ;
+		$row->grant_list = 0 ;
+		drupal_write_record( 'term_access', $row ) ;
+
+		// Set up term private for authenticated D, D, D
+		if( $dco_debug )
+		{
+			fwrite( $handle, "Deny access to authenticated to group private term\n" ) ;
+		}
+		$row = new stdClass() ;
+		$row->tid = $new_tpid ;
+		$row->rid = 2 ; // authenticated user
+		$row->grant_view = 2 ;
+		$row->grant_update = 2 ;
+		$row->grant_delete = 2 ;
+		$row->grant_create = 0 ;
+		$row->grant_list = 0 ;
+		drupal_write_record( 'term_access', $row ) ;
+
+		// Set up term private for dco portal user D, D, D
+		if( $dco_debug )
+		{
+			fwrite( $handle, "Deny access to dco portal user to group private term\n" ) ;
+		}
+		$row = new stdClass() ;
+		$row->tid = $new_tpid ;
+		$row->rid = 11 ; // dco portal user
+		$row->grant_view = 2 ;
+		$row->grant_update = 2 ;
+		$row->grant_delete = 2 ;
+		$row->grant_create = 0 ;
+		$row->grant_list = 0 ;
+		drupal_write_record( 'term_access', $row ) ;
+
+		if( $dco_debug )
+		{
+			fflush( $handle ) ;
+			fclose( $handle ) ;
+		}
+	}
+}
+
+/**
+ * Implementation of hook_og().
+ *
+ * We want to capture whenever someone is added to a group so that we can
+ * add them to the group role, whenever someone is removed from a group we
+ * remove them from the group role.
+ */
+function dco_og( $op, $gid, $uid, $args )
+{
+	$dco_debug = true ;
+
+	if( $dco_debug )
+	{
+		$handle = fopen( "/tmp/dco.debug.log", "a" ) ;
+		fwrite( $handle, "dco_og\n" ) ;
+
+		fwrite( $handle, "  op = $op\n" ) ;
+		fwrite( $handle, "  gid = $gid\n" ) ;
+		fwrite( $handle, "  uid = $uid\n" ) ;
+
+		fwrite( $handle, "  args =\n" ) ;
+		foreach( $args as $arg_name => $arg_value )
+		{
+			fwrite( $handle, "    $arg_name = $arg_value\n" ) ;
+		}
+	}
+
+	// we need this information for any operation.
+
+	// need to get the name of the role from the title of the group.
+	// Hopefully nobody changed it.
+	$group = node_load($gid) ;
+	if( !$group )
+	{
+		if( $dco_debug )
+		{
+			fwrite( $handle, "  group $gid does not exist\n" ) ;
+			fflush( $handle ) ;
+			fclose( $handle ) ;
+		}
+		return ;
+	}
+	$gtitle = $group->title ;
+	if( $dco_debug )
+	{
+		fwrite( $handle, "  group = $gtitle\n" ) ;
+	}
+
+	// now that we know the group title, find the role id.
+	$rname = $gtitle . " Group Member" ;
+	if( $dco_debug )
+	{
+		fwrite( $handle, "  role name $rname\n" ) ;
+	}
+
+	$roles = user_roles(); // loads the roles table into an array
+	if( !$roles )
+	{
+		if( $dco_debug )
+		{
+			fwrite( $handle, "  could not get the user roles\n" ) ;
+			fflush( $handle ) ;
+			fclose( $handle ) ;
+		}
+		return ;
+	}
+	$rid = array_search($rname, $roles);
+	if( !$rid || $rid == 0 )
+	{
+		if( $dco_debug )
+		{
+			fwrite( $handle, "  could not get the role id for $rname\n" ) ;
+			fflush( $handle ) ;
+			fclose( $handle ) ;
+		}
+		return ;
+	}
+	if( $dco_debug )
+	{
+		fwrite( $handle, "  role rid = $rid\n" ) ;
+	}
+
+	// grab the user. If the uid is an array then the request is going to be
+	// user request, which we aren't handling here.
+	if( is_array( $uid ) )
+	{
+		if( $dco_debug )
+		{
+			fwrite( $handle, "  uid is an array, not the right command\n" ) ;
+			fflush( $handle ) ;
+			fclose( $handle ) ;
+		}
+		return ;
+	}
+	$account = user_load($uid);
+	if( !$account )
+	{
+		if( $dco_debug )
+		{
+			fwrite( $handle, "  user $uid does not exist\n" ) ;
+			fflush( $handle ) ;
+			fclose( $handle ) ;
+		}
+		return ;
+	}
+	$uname = $account->name ;
+	if( $dco_debug )
+	{
+		fwrite( $handle, "  user = $uname\n" ) ;
+	}
+
+	// capture if a user is being inserted into a group. Not an invite, not
+	// an update, but an insert.
+	if( ( $op == "user insert" && isset( $args['is_active'] ) && $args['is_active'] == 1 ) || $op == "user approve" )
+	{
+		if( $dco_debug )
+		{
+			fwrite( $handle, "  user insert or user approve\n" ) ;
+		}
+		// first we need to make sure they aren't already a member of
+		// the drupal role.
+		if( isset( $account->roles[$rid] ) )
+		{
+			if( $dco_debug )
+			{
+				fwrite( $handle, "  user $uname already member of $rname\n" ) ;
+				fflush( $handle ) ;
+				fclose( $handle ) ;
+			}
+			return ;
+		}
+
+		// if not, then add them like line 172 above
+		if( $dco_debug )
+		{
+			fwrite( $handle, "  adding role\n" ) ;
+		}
+		$account->roles[$rid] = $rname ;
+		$edit = array('roles' => $account->roles);
+		user_save($account, $edit);
+	}
+	else if( $op == "user delete" )
+	{
+		if( $dco_debug )
+		{
+			fwrite( $handle, "  user delete\n" ) ;
+		}
+		// first we need to make sure they are already a member of
+		// the drupal role.
+		if( !isset( $account->roles[$rid] ) )
+		{
+			if( $dco_debug )
+			{
+				fwrite( $handle, "  user $uname not a member of $rname\n" ) ;
+				fflush( $handle ) ;
+				fclose( $handle ) ;
+			}
+			return ;
+		}
+
+		// if not, then remove the role
+		if( $dco_debug )
+		{
+			fwrite( $handle, "  removing role\n" ) ;
+		}
+		unset( $account->roles[$rid] ) ;
+		$edit = array('roles' => $account->roles);
+		user_save($account, $edit);
+	}
+
+	if( $dco_debug )
+	{
+		fwrite( $handle, "done\n" ) ;
+		fclose( $handle ) ;
+	}
+}
+

@@ -1,0 +1,345 @@
+/* $Id: local-sample.css 6555 2010-02-24 20:21:15Z chris $ */
+
+/****************************/
+/* LOCAL CSS                */
+/****************************/
+
+/* Put your custom CSS and CSS overrides in this file and  */
+/* rename it local.css.  By restricting your CSS changes   */
+/* to local.css, your changes will not be overwritten when */
+/* upgrading to a new version of this theme.  You can also */
+/* use a local-rtl.css file for the equivalent in RTL.     */
+
+/* Steps to activate local.css:                       */
+/* 1. Add your custom CSS to this file                */
+/* 2. Rename this file to local.css                   */
+/* 3. Clear cached data at admin/settings/performance */
+
+#testdiv {
+ /*  */	
+}
+
+#header-group {
+	width: 960px;
+}
+#header-group-wrapper {
+
+	
+}
+
+#navgroup-group-wrapper {
+	clear: both;
+	height: 22px;
+}
+
+.navgroup-group-wrapper {
+
+}
+
+#navgroup-group {
+	overflow: visible;
+	width: 1147px;
+}
+
+.navgroup-group {
+	position: relative;
+	z-index: 10px;
+}
+
+
+#topheader-group {
+	width: 1000px;
+	overflow: visible;
+}
+
+.topheader-group {
+	
+	z-index: 10;
+}
+
+#additional-nav {
+
+	margin-left: 700px;
+	width: 220px;
+	position: absolute;
+}
+
+
+#additional-nav-bottom {
+	/*border-left: 1px solid;*/
+	padding-left: 2px;
+
+}
+
+#nav-block {
+	
+	padding-top: 8px;
+}
+
+
+
+#block-first-front{
+	display: inline-block;
+	float: left;
+	width: 300px;
+	
+}
+
+#block-second-front {
+	display: inline-block;
+	float: left;
+	margin-left: 30px;
+	margin-right: 30px;
+	width: 300px;
+
+}
+
+#block-third-front {
+	display: inline-block;
+	float: left;
+	width: 300px;
+	
+}
+
+#featured {
+	width: 630px;
+	float: left;
+}
+
+#featured-title {
+	height: 30px;
+	margin-top: 15px;
+}
+
+#featured-block-one {
+	display: inline-block;
+	float: left;
+	width: 200px;
+	
+}
+
+#featured-block-two {
+	display: inline-block;
+	float: left;
+	margin-left: 15px;
+	margin-right: 15px;
+	width: 200px;
+
+}
+
+#featured-block-three {
+	display: inline-block;
+	float: left;
+	width: 200px;
+	
+}
+
+#featured-block-four {
+	
+	
+	width: 200px;
+	
+}
+
+#featured-block-five {
+	display: inline-block;
+	float: left;
+	margin-left: 15px;
+	margin-right: 15px;
+	width: 200px;
+	
+}
+
+#featured-block-six {
+	display: inline-block;
+	float: left;
+	width: 200px;
+	
+}
+
+
+/* Events Block override 
+#events-block {
+	width: 300px;
+	margin-left: 30px;
+	float: left;
+
+	background-color: #ff9000;
+}
+
+#events-block-title {
+	height: 50px;
+	margin-top: 15px;
+}
+*/
+
+
+
+#go-deeper {
+	height: 70px;
+	float: left;
+	width: 960px;	
+}
+
+#go-deeper-block {
+	margin-top: 2px;
+}
+
+#faq {
+	display: inline-block;
+	font-family: "Helvetica Neue", arial, helvetica, sans-serif;
+	font-size: 11px;
+	letter-spacing: 0.1em;
+	float: left;
+	padding-right: 10px;
+	width: 30px;
+	
+	padding-top: 12px;
+	
+	
+	
+}
+
+#faq-title {	
+	padding-top: 7px;
+}
+
+#block-directorate {
+	display: inline-block;
+	float: left;
+	width: 630px;
+	
+}
+
+#block-directorate-title {
+
+}
+
+#directorate-feature-block {
+	display: inline-block;
+	float: left;
+	width: 300px;
+	margin-left: 30px;
+	margin-top: 5px;
+}
+
+
+.feature_img {
+	margin-right:10px;
+	margin-bottom:10px;
+	float:left;
+}
+
+.feature_img_caption {
+	float:right;
+	margin-right:10px;
+	margin-bottom:10px;
+	text-align:center;
+}
+
+/* Edited out by Josh 9/10/13. Declaration too broad.
+.dcofooter-group-inner a,
+.dcofooter-group-inner a:link,
+.dcofooter-group-inner a:visited {
+	color: #FFFFFF !important;
+}
+*/
+
+
+/* Edited out by Josh 9/10/13. Declaration too broad.
+#main-wrapper .content a,
+#main-wrapper .content a:link,
+#main-wrapper .content a:visited {
+	text-decoration: underline;
+} 
+#content-content a {
+	text-decoration: underline;
+}*/
+
+.front span a,
+.front span a:link,
+.front span a:visited,
+body#pid-content-deep-energy span a,
+body#pid-content-deep-energy span a:link,
+body#pid-content-deep-energy span a:visited,
+body#pid-content-deep-life span a,
+body#pid-content-deep-life span a:link,
+body#pid-content-deep-life span a:visited {
+	text-decoration: none !important;
+}
+
+body#pid-content-extreme-physics-and-chemistry span a,
+body#pid-content-extreme-physics-and-chemistry span a:link,
+body#pid-content-extreme-physics-and-chemistry span a:visited,
+body#pid-content-reservoirs-and-fluxes span a,
+body#pid-content-reservoirs-and-fluxes span a:link,
+body#pid-content-reservoirs-and-fluxes span a:visited {
+	text-decoration: none !important;
+}
+
+#header-site-info.block {
+	margin-bottom: 0px;
+	padding-top: 8px;
+}
+
+.header-group {
+	margin-bottom: 0px;
+}
+
+#groups-blocks-wrapper {
+	float: left;
+	width: 630px;
+}
+
+#groups-block-one,
+#groups-block-two,
+#groups-block-three,
+#groups-block-four,
+#groups-block-five,
+#groups-block-six {
+	
+	float: left;
+	width: 610px;
+	min-height: 100px;
+	/*border: medium solid #808080;*/
+	margin-bottom: 15px;
+	background-color: #FFFFFF;
+}
+
+#groups-calendar,
+#groups-links,
+#groups-mytasks,
+#groups-members {
+	background-color: #FFFFFF;
+	float: left;
+	width: 284px;
+	min-height: 100px;
+	margin-left: 30px;
+	/*border: medium solid #808080;*/
+	margin-bottom: 15px;
+}
+
+#groups-menu {
+/* PCW 2013-06-11 removed these lines as it was putting a border in the wrong
+ * place, around the menu for the description, not the description itself
+ */
+/*
+	width: 954px;
+	border: medium solid #808080;
+	height: 35px;
+	margin-bottom: 10px;
+*/
+}
+
+#groups-choice-logo {
+/* PCW 2013-06-11 removed these lines as it was putting a border in the wrong
+ * place, around the menu for the description, not the description itself
+ */
+/*
+	width: 954px;
+	min-height: 100px;
+	margin-bottom: 10px;
+	border: medium solid #808080;
+	background-color: #FFFFFF;
+*/
+}
