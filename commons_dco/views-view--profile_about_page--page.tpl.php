@@ -42,7 +42,6 @@ if( $j === false )
 else
 {
 
-print( "*************<br/>" ) ;
 $obj = $j->hits->hits[0]->_source ;
 // These divs were pulled from the original view
 print( "<div id=\"content-content\" class=\"content-content\">" ) ;

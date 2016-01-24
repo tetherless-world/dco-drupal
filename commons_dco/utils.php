@@ -40,7 +40,7 @@ function dco_cleanUp()
 
 function runESQuery( $query )
 {
-    $endpoint = "http://localhost:9200/dco/person/_search" ;
+    $endpoint = "http://localhost:49200/dco/person/_search" ;
     $fullurl = $endpoint . "?q=$query" ;
     return runQuery( $fullurl ) ;
 }
