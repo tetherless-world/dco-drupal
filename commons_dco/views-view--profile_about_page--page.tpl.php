@@ -67,10 +67,10 @@ print( "<div class=\"views-field-value-5\">" ) ;
 print( "<label class=\"views-label-value-5\">" ) ;
 print( "Organization:" ) ;
 print( "</label>" ) ;
-$orgs = $obj->organization ;
+$orgs = $obj->organizations ;
 for( $i = 0; $i < count( $orgs ); $i++ )
 {
-    $org = $orgs[$i] ;
+    $org = $orgs[$i]->organization ;
     if( $i != 0 ) print( ", " ) ;
     print( "<a href=\"" . $org->uri . "\">" . $org->name . "</a>" ) ;
 }
