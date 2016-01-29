@@ -2,8 +2,6 @@
 
 error_reporting( E_ERROR | E_WARNING | E_PARSE ) ;
 
-#$endpoint = "http://localhost:3030/VIVO/query" ;
-
 $curl = null ;
 global $curl ;
 
@@ -40,16 +38,45 @@ function dco_cleanUp()
     curl_close($curl);
 }
 
-function runQuery( $query, $tryme = 0 )
+function runESQuery( $query )
+{
+    $endpoint = "http://localhost:49200/dco/person/_search" ;
+    $fullurl = $endpoint . "?q=$query" ;
+    return runQuery( $fullurl ) ;
+}
+
+function runSPARQLQuery( $query )
+{
+    // set the post to be the query
+    $endpoint = "http://localhost:3030/VIVO/query?output=json" ;
+    $fullurl = $endpoint . "&query=".urlencode( $query ) ;
+    $j = runQuery( $fullurl ) ;
+
+    $bindings = $j->results->bindings ;
+    if( !$bindings )
+    {
+        if( $tryme == 1 )
+        {
+            //fwrite( $log, "no bindings in response\n" ) ;
+            //fwrite( $log, json_last_error_msg() . "\n" ) ;
+            //fwrite( $log, "$content\n" ) ;
+            dco_cleanUp() ;
+        }
+        else
+        {
+            return runQuery( $query, 1 ) ;
+        }
+    }
+    return $bindings ;
+}
+
+function runQuery( $fullurl, $tryme = 0 )
 {
     global $curl, $log ;
 
     //fwrite( $log, "query = $query\n" ) ;
     sleep( 1 ) ;
 
-    // set the post to be the query
-    $endpoint = "https://info.deepcarbon.net/fuseki/VIVO/query?output=json" ;
-    $fullurl = $endpoint . "&query=".urlencode( $query ) ;
     //curl_setopt( $curl, CURLOPT_POSTFIELDS, "query=".urlencode( $query ) ) ;
     curl_setopt( $curl, CURLOPT_URL, $fullurl ) ;
 
@@ -109,22 +136,7 @@ function runQuery( $query, $tryme = 0 )
             return runQuery( $query, 1 ) ;
         }
     }
-    $bindings = $j->results->bindings ;
-    if( !$bindings )
-    {
-        if( $tryme == 1 )
-        {
-            //fwrite( $log, "no bindings in response\n" ) ;
-            //fwrite( $log, json_last_error_msg() . "\n" ) ;
-            //fwrite( $log, "$content\n" ) ;
-            dco_cleanUp() ;
-        }
-        else
-        {
-            return runQuery( $query, 1 ) ;
-        }
-    }
-    return $bindings ;
+    return $j ;
 }
 
 if( !function_exists( 'json_last_error_msg' ) )
