@@ -65,7 +65,7 @@ print( "" ) ;
 // Display the user's organizations, seperated by a comma
 print( "<div class=\"views-field-value-5\">" ) ;
 print( "<label class=\"views-label-value-5\">" ) ;
-print( "Organization:" ) ;
+print( "Affiliations:" ) ;
 print( "</label>" ) ;
 $orgs = $obj->organizations ;
 for( $i = 0; $i < count( $orgs ); $i++ )
