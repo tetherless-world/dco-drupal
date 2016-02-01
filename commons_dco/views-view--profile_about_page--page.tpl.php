@@ -107,7 +107,7 @@ print( "" ) ;
 // Display the DCO Portal Groups this user is a member of, separated by a comma
 print( "<div class=\"views-field-tid\">" ) ;
 print( "<label class=\"views-label-tid\">" ) ;
-print( "Teams:" ) ;
+print( "DCO Teams:" ) ;
 print( "</label>" ) ;
 $teams = $obj->teams ;
 for( $i = 0; $i < count( $teams ); $i++ )
