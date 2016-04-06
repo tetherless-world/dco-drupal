@@ -1988,6 +1988,14 @@ div.views-field-created span.field-content h6 em {
 .small {
 	font-size: 85%;
 }
+/*.block div.view div.views-admin-links {
+	border: 1px solid #ff0000;
+	z-index: 5000;
+	margin-top: -1em;
+}*/
+div.links {
+	display: none;
+}
 /*
   ul.menu.sf-menu  li ul.menu li {
 	float: left;
