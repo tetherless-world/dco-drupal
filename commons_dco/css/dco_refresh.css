@@ -1717,8 +1717,9 @@ font-size: 110%;*/
   margin: 0; }
 
 #content-content li {
-  /*padding-left: 1em; */
-  /*text-indent: -.7em;*/ }
+  margin-left: 1.5em;
+  margin-bottom: .25em;
+   }
 
 div#content-inner-inner.content-inner-inner div#content-content.content-content div.inner div.content ul {
   list-style: inside; }
@@ -1996,6 +1997,7 @@ div.views-field-created span.field-content h6 em {
 div.links {
 	display: none;
 }
+
 /*
   ul.menu.sf-menu  li ul.menu li {
 	float: left;
