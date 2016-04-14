@@ -162,20 +162,11 @@
 	<?php print $groups_menu; ?>
 	</div>
 		<div id="groups-blocks-wrapper">
-		<div id="groups-block-one">
-		<?php print $groups_block_one; ?>
-		</div>
 		<div id="groups-block-two">
 		<?php print $groups_block_two; ?>
 		</div>
 		<div id="groups-block-three">
 		<?php print $groups_block_three; ?>
-		</div>
-		<div id="groups-block-four">
-		<?php print $groups_block_four; ?>
-		</div>
-		<div id="groups-block-five">
-		<?php print $groups_block_five; ?>
 		</div>
 		<div id="groups-block-six">
 		<?php print $groups_block_six; ?>
