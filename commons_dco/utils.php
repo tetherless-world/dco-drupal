@@ -42,6 +42,7 @@ function runESQuery( $query )
 {
     $endpoint = "http://localhost:49200/dco/person/_search" ;
     $fullurl = $endpoint . "?q=$query" ;
+    $fullurl = str_replace( " ", "%20", $fullurl ) ;
     return runQuery( $fullurl ) ;
 }
 
