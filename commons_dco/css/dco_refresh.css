@@ -51,51 +51,55 @@ item-list ul li, .node .inner ul li, .panel-pane .inner ul li, .block .content u
   background: none;
   text-indent: 0; }
 
-#sidebar {
-  float: right;
-  clear: none;
-  margin: 0px;
-  width: 300px;
-  margin-left: 10px;
-  padding-left: 7px;
-  margin-bottom: 9px;
-  margin-bottom: 7px;
-  font-family: "helvetica Neue Light",helvetica, arial,sans-serif;
-  font-weight: normal;
-  border-left: dotted 2px #cecece; }
-  #sidebar h3 {
+  /* START SIDEBAR */
+  
+  #sidebar {
+    float: right;
+    clear: none;
+    margin: 0px;
+    width: 300px;
+    margin-left: 10px;
+    padding-left: 7px;
+    margin-bottom: 9px;
+    margin-bottom: 7px;
     font-family: "helvetica Neue Light",helvetica, arial,sans-serif;
-    font-size: 130%;
-    margin: 0px;
-    padding: 0px;
-    padding-top: 5px; }
-  #sidebar .block .inner {
-    margin: 0px;
-    padding: 0px; }
-  #sidebar ul {
-    padding: 0px;
-    margin: 0px; }
-  #sidebar li {
-    padding: 7px;
-    padding-left: 14px;
-    background: url("http://deepcarbon.net/sites/dco.rpi.edu/files/images/menu-back.png") center bottom; }
-    #sidebar li.videoli {
+    font-weight: normal;
+    border-left: dotted 2px #cecece; }
+    #sidebar h3 {
+      font-family: "helvetica Neue Light",helvetica, arial,sans-serif;
+      font-size: 130%;
+      margin: 0px;
+      padding: 0px;
+      padding-top: 5px; }
+    #sidebar .block .inner {
+      margin: 0px;
+      padding: 0px; }
+    #sidebar ul {
       padding: 0px;
       margin: 0px; }
-    #sidebar li.toptitle {
-      display: block;
-      height: 24px;
-      background: url("http://deepcarbon.net/sites/dco.rpi.edu/files/images/menu-back.png") center top;
-      color: #eee;
-      text-shadow: 0px -1px 1px #5e1311;
-      padding-left: 15px;
-      padding-top: 9px;
-      text-align: center;
-      border: 1px solid #999; }
+    #sidebar li {
+      padding: 7px;
+      padding-left: 14px;
+      background: url("http://deepcarbon.net/sites/dco.rpi.edu/files/images/menu-back.png") center bottom; }
+      #sidebar li.videoli {
+        padding: 0px;
+        margin: 0px; }
+      #sidebar li.toptitle {
+        display: block;
+        height: 24px;
+        background: url("http://deepcarbon.net/sites/dco.rpi.edu/files/images/menu-back.png") center top;
+        color: #eee;
+        text-shadow: 0px -1px 1px #5e1311;
+        padding-left: 15px;
+        padding-top: 9px;
+        text-align: center;
+        border: 1px solid #999; }
 
-#events-block .field-content {
-  line-height: 1.4;
-  display: block; }
+  #events-block .field-content {
+    line-height: 1.4;
+    display: block; }
+  
+  /* END SIDEBAR */
 
 table.profilenav {
   width: 100%;
